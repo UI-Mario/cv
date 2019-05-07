@@ -322,50 +322,18 @@ def process(image, sift_featrue):
     sift_image = sift_featrue.draw_sift_features(image=image.astype(np.uint8),
                                                  keypoints=keypoints,
                                                  feature_rois=feature_rois)
-    return sift_image
-
-
-def match(img1, img2, des1, des2, goodMatch):
-	FLANN_INDEX_KDTREE = 1
-	index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
-	search_params = dict(checks=50)
-	flann = cv2.FlannBasedMatcher(index_params, search_params)
-	matches = flann.knnMatch(des1, des2, k=2)
-	for m, n in matches:
-		if m.distance < 0.50*n.distance:
-			goodMatch.append(m)
-	goodMatch = np.expand_dims(goodMatch, 1)
-	return goodMatch
-
-
 
 
 if __name__ == '__main__':
-    image1 = cv2.imread('l.bmp')
-    image2 = cv2.imread('r.bmp')
-    
-    image1 = image1.astype(np.float32)
-    image2 = image2.astype(np.float32)
 
+    image = cv2.imread('l.bmp')
+    image = image.astype(np.float32)
     sift_featrue = SiftFeature()
-    sift_img1 = process(image1, sift_featrue)
-    kp1 = sift_img1.keypoints
-    des1 = sift_img1.feature_rois
-    sift_featrue = SiftFeature()
-    sift_img2 = process(image2, sift_featrue)
-    kp2 = sift_img2.keypoints
-    des2 = sift_img2.feature_rois
-    goodMatch = []
-    goodMatch = match(image1, image2, des1, des2, goodMatch)
+    process(image, sift_featrue)
 
-    img_out = cv2.drawMatchesKnn(image1, kp1, image2, kp2, goodMatch[:15], None, flags=2)
-
-    cv2.imshow('image', img_out)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
     # cv2.imwrite('l.bmp',sift_image)
     # print(feature_rois)
     # print(keypoints)
-
+    cv2.waitKey(0)
 
 
